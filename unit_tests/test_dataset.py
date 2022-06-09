@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 from dataset import solve_fizz_buzz, generate_data
@@ -35,8 +36,11 @@ def test_solve_fizz_buzz(num: int, expected_result: str):
 
 
 def test_generate_data():
-    expected_X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    expected_y = ["", "", "Fizz", "", "Buzz", "Fizz", "", "", "Fizz", "Buzz"]
-    X, y = generate_data(1, 10)
-    assert X == expected_X
-    assert y == expected_y
+    expected_df = pd.DataFrame(
+        {
+            "number": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            "label": ["", "", "Fizz", "", "Buzz", "Fizz", "", "", "Fizz", "Buzz"],
+        }
+    )
+    result_df = generate_data(1, 10)
+    pd.testing.assert_frame_equal(result_df, expected_df)

@@ -11,8 +11,6 @@ def solve_fizz_buzz(num: int) -> str:
 
 
 def generate_data(start_num: int, end_num: int) -> pd.DataFrame:
-    X, y = [], []
-    for i in range(start_num, end_num + 1):
-        X.append(i)
-        y.append(solve_fizz_buzz(i))
-    return X, y
+    df = pd.DataFrame({"number": range(start_num, end_num + 1)})
+    df["label"] = df["number"].apply(solve_fizz_buzz)
+    return df
