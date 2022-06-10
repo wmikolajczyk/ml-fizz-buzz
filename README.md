@@ -11,3 +11,5 @@ Create virtualenv and install requirements `pip install -r requirements.txt`
 For model training run `python model.py`
 ### Model serving
 For model serving run `uvicorn serving:app --reload`
+
+For endpoint auto-generated docs go to `http://localhost:8000/docs`
