@@ -5,8 +5,10 @@ from typing import Dict
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.base import TransformerMixin
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, classification_report
+from sklearn.pipeline import Pipeline
 
 from dataset import generate_data
 
@@ -20,18 +22,26 @@ def get_model(model_path: Path = MODEL_PATH):
 
 
 def evaluate(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:
-    metrics = {"f1": f1_score(y_true, y_pred, average="macro")}
+    metrics = {
+        "f1": f1_score(y_true, y_pred, average="macro"),
+        "classification_report": classification_report(y_true, y_pred),
+    }
     return metrics
 
 
-def get_last_pentadecimal_char(num: int) -> str:
-    return np.base_repr(num, base=15)[-1]
+def int_to_pentadecimal_str(num: int) -> str:
+    return np.base_repr(num, base=15)
 
 
-def process_features(df: pd.DataFrame) -> pd.DataFrame:
-    pentadecimal_last_chars = df["number"].apply(get_last_pentadecimal_char)
-    features = pd.get_dummies(pentadecimal_last_chars)
-    return features
+class Preprocessor(TransformerMixin):
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        pentadecimal_str = X["number"].apply(int_to_pentadecimal_str)
+        pentadecimal_last_chars = pentadecimal_str.apply(lambda val: val[-1])
+        features = pd.get_dummies(pentadecimal_last_chars)
+        return features
 
 
 if __name__ == "__main__":
@@ -43,13 +53,18 @@ if __name__ == "__main__":
     X_val, y_val = val_df[["number"]], val_df["label"]
     X_test, y_test = test_df[["number"]], test_df["label"]
 
-    model = RandomForestClassifier(n_jobs=-1, random_state=93)
-    model.fit(process_features(X_train), y_train)
+    model = Pipeline(
+        [
+            ("preprocess_features", Preprocessor()),
+            ("classifier", RandomForestClassifier(n_jobs=-1, random_state=93)),
+        ]
+    )
+    model.fit(X_train, y_train)
 
-    test_preds = model.predict(process_features(X_test))
+    test_preds = model.predict(X_test)
     metrics = evaluate(y_test, test_preds)
-    print(metrics)
-    print(classification_report(y_test, test_preds))
+    for metric_name, metric_val in metrics.items():
+        print(f"{metric_name}\n{metric_val}")
 
     # save model
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
