@@ -18,11 +18,11 @@ MODEL_PATH = MODEL_DIR / "random_forest.joblib"
 
 
 @lru_cache(maxsize=1)
-def get_model(model_path: Path = MODEL_PATH):
+def get_model(model_path: Path = MODEL_PATH) -> Pipeline:
     return joblib.load(model_path)
 
 
-def pentadecimal_features_random_forest():
+def pentadecimal_features_random_forest() -> Pipeline:
     return Pipeline(
         [
             (
@@ -58,7 +58,7 @@ def pentadecimal_features_random_forest():
     )
 
 
-def binary_features_random_forest():
+def binary_features_random_forest() -> Pipeline:
     return Pipeline(
         [
             ("preprocess_features", BinaryFeaturesPreprocessor()),

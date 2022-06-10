@@ -1,4 +1,4 @@
-import json
+from typing import Dict
 
 import pandas as pd
 from fastapi import FastAPI
@@ -14,12 +14,12 @@ class PredictionInputData(BaseModel):
 
 
 @app.get("/healthcheck")
-async def healthcheck():
+async def healthcheck() -> Dict:
     return {"is_alive": True}
 
 
 @app.post("/predict")
-async def predict(input_data: PredictionInputData):
+async def predict(input_data: PredictionInputData) -> Dict:
     model = get_model()
     X = pd.DataFrame({"number": input_data.number})
     prediction = model.predict(X).tolist()
