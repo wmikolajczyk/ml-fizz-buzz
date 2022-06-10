@@ -4,6 +4,7 @@ from pathlib import Path
 import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder
 
 from dataset import generate_data
 from feature_preprocessors import (
@@ -24,7 +25,34 @@ def get_model(model_path: Path = MODEL_PATH):
 def pentadecimal_features_random_forest():
     return Pipeline(
         [
-            ("preprocess_features", PentadecimalFeaturesPreprocessor()),
+            (
+                "get_last_char_of_pentadecimal_representation",
+                PentadecimalFeaturesPreprocessor(),
+            ),
+            (
+                "one_hot_encoder",
+                OneHotEncoder(
+                    categories=[
+                        [
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6",
+                            "7",
+                            "8",
+                            "9",
+                            "A",
+                            "B",
+                            "C",
+                            "D",
+                            "E",
+                        ]
+                    ]
+                ),
+            ),
             ("classifier", RandomForestClassifier(n_jobs=-1, random_state=93)),
         ]
     )
