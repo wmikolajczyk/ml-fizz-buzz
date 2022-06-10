@@ -33,5 +33,7 @@ class BinaryFeaturesPreprocessor(TransformerMixin):
             width=self.num_of_last_characters, fillchar="0"
         ).str[-self.num_of_last_characters :]
         # split string to columns
-        features = last_n_binary_chars.apply(lambda val: pd.Series(list(val)))
+        features = last_n_binary_chars.apply(
+            lambda val: pd.Series(list(val), dtype=float)
+        )
         return features
