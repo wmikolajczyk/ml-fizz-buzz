@@ -7,6 +7,8 @@ Machine Learning approach to Fizz Buzz problem
 - utils.py - some utilities
 ### Prerequisities
 Create virtualenv and install requirements `pip install -r requirements.txt`
+### Tests
+For unit tests run `pytest unit_tests --verbose`
 ### Model training
 For model training run `python model.py`
 ### Model serving
