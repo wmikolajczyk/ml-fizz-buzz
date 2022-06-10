@@ -13,3 +13,11 @@ For model training run `python model.py`
 For model serving run `uvicorn serving:app --reload`
 
 For endpoint auto-generated docs go to `http://localhost:8000/docs`
+
+Example call: `curl --location --request POST 'localhost:8000/predict' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "number": [
+    0,2,3,4,5,10,15
+  ]
+}'`
