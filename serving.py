@@ -1,9 +1,8 @@
 import json
-from typing import List
 
 import pandas as pd
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, conlist
 
 from model import get_model
 
@@ -11,7 +10,7 @@ app = FastAPI()
 
 
 class PredictionInputData(BaseModel):
-    number: List[int]
+    number: conlist(int, min_items=1)
 
 
 @app.get("/healthcheck")
