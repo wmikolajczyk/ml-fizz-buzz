@@ -1,11 +1,22 @@
+from functools import lru_cache
+from pathlib import Path
 from typing import Dict
 
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, classification_report
 
 from dataset import generate_data
+
+MODEL_DIR = Path("models")
+MODEL_PATH = MODEL_DIR / "random_forest.joblib"
+
+
+@lru_cache(maxsize=1)
+def get_model(model_path: Path = MODEL_PATH):
+    return joblib.load(model_path)
 
 
 def evaluate(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:
@@ -39,3 +50,7 @@ if __name__ == "__main__":
     metrics = evaluate(y_test, test_preds)
     print(metrics)
     print(classification_report(y_test, test_preds))
+
+    # save model
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
+    joblib.dump(model, MODEL_PATH)
