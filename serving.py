@@ -21,6 +21,6 @@ async def healthcheck():
 @app.post("/predict")
 async def predict(input_data: PredictionInputData):
     model = get_model()
-    X = pd.DataFrame(json.loads(input_data.json()))
+    X = pd.DataFrame({"number": input_data.number})
     prediction = model.predict(X).tolist()
     return {"result": prediction}
