@@ -23,3 +23,8 @@ Example call: `curl --location --request POST 'localhost:8000/predict' \
     0,2,3,4,5,10,15
   ]
 }'`
+### Building and running Docker container
+First build docker image `docker build -t ml-fizz-buzz .`
+
+Then run a docker container with it `docker run -p 8000:8000 ml-fizz-buzz`
+
